@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+:root{--blue:#006994;}
+
+body{
+  margin: 0px;
+  padding: 0px;
+  background: #A9D1D4;
+  overflow: hidden;
+  font-family: 'Raleway', sans-serif;
+}
+
+img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+}
+.clearfix{
+  clear: both;
+}
+
+.sidenav .logo{ 
+  margin: 0;
+  color: black;
+  margin-left: 28px;
+  font-weight: bolder;
+  padding: 0.7rem 1%;
+  margin-bottom: 40px;
+  font-size: 30px;
+}
+.sidenav .logo span{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: var(--blue);
+}
+
+.sidenav{
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  padding-top: 30px;
+  width: 300px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0%;
+  overflow-x: hidden;
+  transition: 0.3s ease;
+  transition-property: left;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  white-space: nowrap;
+  z-index: 1;
+}
+.sidenav a{
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  font-weight: bold;
+  padding: 20px 8px 15px 32px;
+  text-decoration: none;
+  font-size: 17px;
+  color: black;
+  display: block;
+  transition: 0.5s ease;
+}
+.sidenav a.active{
+  display: block;
+  background: #A9D1D4;
+}
+
+.signout a{
+  margin-top: 100%;
+}
+
+.sidenav i{
+  margin-right: 15px;
+  width: 15px;
+}
+
+#main{
+  padding: 16px;
+  margin-left: 300px;
+}
+.head{
+  padding: 20px;
+}
+
+.col-div-6{
+  width: 50%;
+  float: left;
+}
+
+.profile{
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  display: inline-block;
+  float: right;
+  width: 160px;
+}
+.pro-img{
+  float: right;
+  width: 40px; 
+  margin: 0px;
+}
+
+/*table*/
+
+.page-content{
+  padding: 1.3rem 1rem;
+}
+
+.report{
+  border-radius: 3px;
+	background: whitesmoke;
+  box-shadow: 0px 0px 18px 0 #0000002c;
+}
+
+.report-header{
+  padding: 1rem;
+  width: 93%;
+  margin-left: 10px;
+}
+
+.add{
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+}
+.add span{
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.add a i{
+  position: relative;
+  float: right;
+  font-size: 2rem;
+  transition: 0.5s ease;
+}
+
+table{
+  width: 100%;
+}
+table, td, th{
+  border-collapse: collapse;
+  transition: 0.5s ease;
+  text-align: left;
+  padding: 1rem;
+}
+
+thead th{
+  font-size: 0.8rem;
+  position: sticky;
+	top: 0;
+	left: 0;
+	background-color: #fff7;
+}
+
+thead th:first-child{
+  padding-left: 1rem;
+}
+tbody td:first-child{
+  padding: 1rem 0rem;
+  padding-left: 1rem;
+  color: #012169;
+  font-weight: bold;
+  font-size: 0.7rem;
+}
+
+tbody td{
+  color: black;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.country{
+  margin-right: 0.5rem;
+}
+.country-img{
+  display: flex;
+  align-items: center;
+}
+.country-name{
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+td img{
+  width: 40px;
+  height: 40px;
+  margin-right: 1.5rem;
+	border-radius: 50%;
+	vertical-align: middle;
+}
+
+.actions span{
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+  transition: 0.5s ease;
+}
+
+tbody tr{
+  transition: 0.5s ease;
+}
+tbody tr:nth-child(even){
+	background-color: #0000000b;
+}
+tbody tr:hover{
+	transform: scale(1.0);
+	box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2), -1px -1px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*modal*/
+.modal, .modal-dialog, .modal-content, .modal-header, .modal-title, .modal-body, .modal-footer{
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.col-sm-7 input{
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+}
+
+.modal-footer button{
+  padding: 0.5rem;
+}
+
+.modal .modal-footer .cancel{
+  font-size: 0.9rem;
+  background: none;
+  border: 1px solid #7c0a02;
+  color: black;
+  border-radius: 5px;
+  transition: 0.5s ease;
+}
+.modal .modal-footer .cancel:hover{
+  background: #7c0a02;
+  color: whitesmoke;
+}
+.modal .modal-footer .create{
+  font-size: 0.9rem;
+  background: none;
+  border: 1px solid #012169;
+  color: black;
+  border-radius: 5px;
+  transition: 0.5s ease;
+}
+.modal .modal-footer .create:hover{
+  background: #012169;
+  color: whitesmoke;
+}
+
+.modal .modal-footer .update{
+  font-size: 0.9rem;
+  background: none;
+  border: 1px solid #0B6623;
+  color: black;
+  border-radius: 5px;
+  transition: 0.5s ease;
+}
+.modal .modal-footer .update:hover{
+  background: #0B6623;
+  color: whitesmoke;
+}

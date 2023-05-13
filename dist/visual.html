@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/visualization.css">
+    <title>ITD108</title>
+    <script defer src="./bundle.js"></script>
+</head>
+<body>
+  
+  <div id="sidenav" class="sidenav">
+
+    <p class="logo">codata<span>.</span></p>
+
+    <a href="home.html" class="icon-a"><i class="fa-solid fa-list-check"></i> &nbsp;&nbsp; Dashboard</a>
+
+    <a href="datasets.html" class="icon-a"><i class="fa-solid fa-database icons"></i> &nbsp;&nbsp; Datasets</a>
+
+    <a href="visual.html"class="active"><i class="fa-solid fa-chart-simple icons"></i> &nbsp;&nbsp; Data Visualization</a>
+
+    <div class="signout">
+      <a href="#"class="icon-a"><i class="fa-solid fa-right-from-bracket icons"></i> &nbsp;&nbsp; Sign Out</a>
+    </div>
+    
+  </div>
+
+  <div id="main">
+    <div class="head">
+
+      <div class="col-div-6">
+        <span  id="overview" style="font-size: 35px; cursor: pointer; font-weight: bold;" > Data Visualization </span>
+      </div>
+
+      <div class="col-div-6">
+        <div class="profile">
+
+          <img src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/48/1A1A1A/external-user-user-tanah-basah-glyph-tanah-basah-4.png" class="pro-img"/>
+
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="clearfix"></div>
+	  <br>
+
+        
+          <div class="cumulative container graph-container"> 
+            <canvas id="age-chart"></canvas> 
+          </div>
+
+        <br><br>
+        
+          <div class="death container graph-container"> 
+            <canvas id="death-chart"></canvas> 
+          </div>
+    
+ 
+    <div class="clearfix"></div>
+
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
+
+
+<script type="module">
+   
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getFirestore, setDoc, addDoc, doc, updateDoc,deleteDoc, getDoc, query, collection, where, getDocs, onSnapshot  } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+  
+  
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+  
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+      apiKey: "AIzaSyBHy3Gihw8S_mt9_DfJtig77IDzqs5mamA",
+      authDomain: "casestudy1-dc7ed.firebaseapp.com",
+      projectId: "casestudy1-dc7ed",
+      storageBucket: "casestudy1-dc7ed.appspot.com",
+      messagingSenderId: "795551283591",
+      appId: "1:795551283591:web:c8721a89279c5629137b22",
+      measurementId: "G-9QM42NYXW1"
+    };
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  console.log(app);
+
+  function GetAllDataRealtime(){
+  const q = query(collection(db, "covid"))
+  const list = onSnapshot(q, (querySnapshot) => {
+    var datasetss = [];
+    let countries =[];
+    let region =[];
+    let cases=[];
+    let death=[];
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      datasetss.push({...data, id: doc.id}); 
+      
+      countries.push(data.country);
+      region.push(data.who_reg);
+      cases.push(data.cases);
+      death.push(data.death);
+      console.log(doc.id)
+    })
+    
+    // for visualization
+    let deathChart = Chart.getChart('death-chart');
+    if (deathChart) {
+       deathChart.destroy();
+    }
+
+
+    let ageChart = Chart.getChart('age-chart');
+    if (ageChart) {
+       ageChart.destroy();
+    }
+
+    let chartData = {
+      labels: countries,
+      datasets: [{
+        label: 'Cumulative Total Cases',
+        data: cases,
+        backgroundColor: 'rgba(25, 212, 0, 0.2)',
+        borderColor: 'rgb(0, 104, 5)',
+        borderWidth: 1
+      }]
+    };
+
+
+
+    let chartData1 = {
+      labels: countries,
+      datasets: [{
+        label: 'Death Total Cases',
+        data: death,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        borderColor: 'rgb(0, 0, 0)',
+        borderWidth: 1
+      }]
+    };
+
+    let chartOptions = {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    };
+
+
+
+    ageChart = new Chart(document.getElementById('age-chart'), {
+      type: 'bar',
+      data: chartData,
+      options: chartOptions
+    });
+
+    deathChart = new Chart(document.getElementById('death-chart'), {
+      type: 'bar',
+      data: chartData1,
+      options: chartOptions
+    });
+  })
+}
+
+window.onload = GetAllDataRealtime;
+
+
+
+  
+  // function GetAllDataRealtime(){
+  //   const q = query(collection(db, "covid"))
+  //   const list = onSnapshot(q, (querySnapshot) => {
+  //      var datasetss = [];
+  
+  //     querySnapshot.forEach(doc => {
+  //       const data = doc.data();
+  //       datasetss.push({...data, id: doc.id}); 
+  //       console.log(doc.id)
+  //     })
+  //     populateTableList(datasetss)
+  //   })
+  // }
+  
+  // window.onload = GetAllDataRealtime;
+  
+  //------------------------------------Edit Data------------------------------------------//
+  
+  // var edCountry = document.getElementById('countryEd');
+  // var edReg = document.getElementById('regEd');
+  // var edCase = document.getElementById('caseEd');
+  // var edDeath = document.getElementById('deathEd');
+  // var EditBtn = document.querySelector("#edButton");
+  
+  // window.FillTboxes = function(id, docId) {
+  //   --id;
+  //   edCountry.value = datasets[id][0];
+  //   edReg.value = datasets[id][1];
+  //   edCase.value = datasets[id][2];
+  //   edDeath.value = datasets[id][3];
+  //   EditBtn.dataset.id = docId;
+  // };
+  
+  // const saveEdit = document.querySelector("#edButton")
+  // saveEdit.addEventListener("click", async () =>{
+  //   try {
+  //     const docRef = doc(db, "covid", EditBtn.dataset.id);
+  //     const docSnap = await getDoc(docRef);
+  //     if (docSnap.exists()) {
+  //       await setDoc(docRef, {
+  //         country: edCountry.value,
+  //         who_reg: edReg.value,
+  //         cases: edCase.value,
+  //         death: edDeath.value,
+  
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // });
+  
+  // //------------------------------------Delete Data------------------------------------------//
+  // window.DelButt = async function(id) {
+  //   const docRef = doc(db, "covid", id);
+  //   const docSnap = await getDoc(docRef);
+  //   if (docSnap.exists()) {
+  //     await deleteDoc(docRef);
+  //     setData(data.filter((item)=> item.id !==id));
+  //     console.log(doc.id)
+  //   } else {
+  //     console.log("Document does not exist");
+  //   }
+  // }
+  
+  </script>
+  
+

@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/home.css">
+    <title>ITD108</title>
+    <script defer src="./bundle.js"></script>
+</head>
+<body>
+  
+  <div id="sidenav" class="sidenav">
+
+    <p class="logo">codata<span>.</span></p>
+
+    <a href="home.html" class="active"><i class="fa-solid fa-list-check"></i> &nbsp;&nbsp; Dashboard</a>
+
+    <a href="datasets.html" class="icon-a"><i class="fa-solid fa-database icons"></i> &nbsp;&nbsp; Datasets</a>
+
+    <a href="visual.html"class="icon-a"><i class="fa-solid fa-chart-simple icons"></i> &nbsp;&nbsp; Data Visualization</a>
+
+    <div class="signout">
+      <a id="signout" class="out"><i class="fa-solid fa-right-from-bracket icons"></i> &nbsp;&nbsp; Sign Out</a>
+    </div>
+    
+  </div>
+
+  <div id="main">
+    <div class="head">
+
+      <div class="col-div-6">
+        <span  id="overview" style="font-size: 35px; cursor: pointer; font-weight: bold;" > Overview </span>
+      </div>
+
+      <div class="col-div-6">
+        <div class="profile">
+
+          <img src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/48/1A1A1A/external-user-user-tanah-basah-glyph-tanah-basah-4.png" class="pro-img"/>
+
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="clearfix"></div>
+	  <br>
+
+     <div class="col-div-3">
+      <div class="box">
+        <p id="total-countries">0<br><span>Total Country</span></p>
+        <i class="fa-solid fa-map-pin box-icon" style="color: #8a0000;"></i>
+      </div>
+    </div>
+    
+    <div class="col-div-3">
+      <div class="box">
+        <p id="total-cases">0<br><span>Total Cases</span></p>
+        <i class="fa-solid fa-chart-line box-icon" style="color: #004d0d;"></i>
+      </div>
+    </div>
+
+    <div class="col-div-3">
+      <div class="box">
+        <p id="total-deaths">0<br><span>Total Deaths</span></p>
+        <i class="fa-solid fa-cross box-icon"></i>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <br>
+
+    <div class="col-div-8">
+      <div class="box-8">
+        <div class="content-box">
+          <p><strong>First Four Global Country Report</strong>  <a href="datasets.html"><span>View All</span></a></p>
+          <br>
+          <table>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Country</th>
+                <th>WHO Region</th>
+                <th>Cumulative Total</th>
+                <th>Death Cumulative Total</th>
+              </tr>
+            </thead>
+            <tbody id="tbody1"></tbody>
+          </table>
+            
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-div-4">
+      <div class="box-4">
+
+        <!--bago ni siya-->
+        <div class="content-box">
+          <p><strong>Total COVID-19 Cases</strong> <a href="visual.html"><span>View</span></a></p>
+
+          <div class="circle-wrap">
+            <div class="circle">
+              <div class="mask full">
+                <div class="fill"></div>
+              </div>
+              <div class="mask half">
+                <div class="fill"></div>
+              </div>
+              <div class="inside-circle" id="total-population">Loading...</div>
+
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+</body>
+</html>
+
+<script type="module">  
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-app.js";
+  // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-analytics.js";
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-auth.js";
+  import { connectFirestoreEmulator, getCountFromServer, getFirestore, setDoc, addDoc, doc, updateDoc,deleteDoc, getDoc, query, collection, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-firestore.js";
+  
+  
+  
+const firebaseConfig = {
+  apiKey: "AIzaSyBHy3Gihw8S_mt9_DfJtig77IDzqs5mamA",
+  authDomain: "casestudy1-dc7ed.firebaseapp.com",
+  projectId: "casestudy1-dc7ed",
+  storageBucket: "casestudy1-dc7ed.appspot.com",
+  messagingSenderId: "795551283591",
+  appId: "1:795551283591:web:c8721a89279c5629137b22",
+  measurementId: "G-9QM42NYXW1"
+};
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
+  console.log(app);
+
+
+  //Total number of Countries
+  document.addEventListener("DOMContentLoaded", async function() {
+  const q = query(collection(db, "covid"));
+  const querySnapshot = await getDocs(q).then((snapshot) => {
+    if (!snapshot.empty) {
+      const totalCountries = snapshot.docs.length;
+      console.log('count: ', totalCountries);
+      document.getElementById("total-countries").innerHTML = `${totalCountries}<br><span>Total Country</span>`;
+    } else {
+      console.log('No documents found');
+    }
+  });
+});
+
+
+
+
+
+const collectionRef = collection(db, 'covid');
+const queryRef = query(collectionRef);
+let totalCases = 0;
+let totalDeaths = 0;
+
+
+getDocs(queryRef)
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const cases = parseInt(data.cases);
+      totalCases += cases;
+    });
+    console.log('Total Cases:', totalCases);
+
+    const formattedTotalCases = formatNumber(totalCases);
+    document.getElementById("total-cases").innerHTML = `${formattedTotalCases}<br><span>Total Cases</span>`;
+  })
+  .catch((error) => {
+    console.log('Error getting documents:', error);
+  });
+
+function formatNumber(num) {
+  const billion = 1000000000;
+  const million = 1000000;
+  const thousand = 1000;
+
+  if (num >= billion) {
+    return (num / billion).toFixed(1) + 'B';
+  } else if (num >= million) {
+    return (num / million).toFixed(0) + 'M';
+  } else if (num >= thousand) {
+    return (num / thousand).toFixed(0) + 'K';
+  } else {
+    return num.toString();
+  }
+}
+
+  getDocs(queryRef)
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const deaths = parseInt(data.death);
+      totalDeaths += deaths;
+    });
+    console.log('Total Deaths:', totalDeaths);
+
+    const formattedTotalDeaths = formatNumber(totalDeaths);
+    document.getElementById("total-deaths").innerHTML = `${formattedTotalDeaths}<br><span>Total Deaths</span>`;
+  })
+  .catch((error) => {
+    console.log('Error getting documents:', error);
+  });
+
+
+  //---------------------------------Total case of the worlds population
+  getDocs(queryRef)
+  .then((querySnapshot) => {
+    let totalCases = 0;
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const cases = parseInt(data.cases);
+      totalCases += cases;
+    });
+
+    let worldPopulation = 8400000000;
+    const percentage = (totalCases / worldPopulation) * 1000;
+    const covidPercentageDisplay = percentage.toFixed(2) + '%';
+    
+    const covidPercentageElement = document.getElementById("total-population");
+    if (covidPercentageElement) {
+      covidPercentageElement.innerHTML = covidPercentageDisplay;
+    } else {
+      console.error("Element with id 'covid-percentage' not found");
+    }
+  })
+  .catch((error) => {
+    console.log('Error getting world population data:', error);
+  });
+
+    //----- Logout code start	  
+    document.getElementById("signout").addEventListener("click", function() {
+      signOut(auth).then(() => {
+        // Sign-out successful.
+        console.log('Sign-out successful.');
+        alert('Sign-out successful.');
+        document.getElementById('signout').style.display = 'none';
+        window.location.href = "index.html";
+  
+      }).catch((error) => {
+        // An error happened.
+        console.log('An error happened.');
+      });		  		  
+    });
+    //----- End
+
+//------------------------------------Get Data------------------------------------------//
+var dataNo =0;
+var datasets = [];
+var tbody = document.getElementById('tbody1');
+
+
+function AddItemToTable(country, who_reg, cases, death, id){
+  var trow = document.createElement('tr');
+  // var td0 = document.createElement('td'); 
+  var td1 = document.createElement('td');
+  var td2 = document.createElement('td');
+  var td3 = document.createElement('td');
+  var td4 = document.createElement('td');
+  var td5 = document.createElement('td');
+
+  // td0.innerHTML = ''; 
+  td1.innerHTML = ++dataNo;
+  td2.innerHTML = country;
+  td3.innerHTML = who_reg;
+  td4.innerHTML = cases;
+  td5.innerHTML = death;
+  datasets.push([country, who_reg, cases, death, id]);
+
+  // trow.appendChild(td0); 
+  trow.appendChild(td1);
+  trow.appendChild(td2);
+  trow.appendChild(td3);
+  trow.appendChild(td4);
+  trow.appendChild(td5);
+
+
+  tbody.appendChild(trow);
+
+}
+
+
+function populateTableList(UserDocList){
+  dataNo=0;
+  tbody.innerHTML="";
+  UserDocList.forEach(element => {
+    AddItemToTable(element.country, element.who_reg, element.cases, element.death, element.id);
+
+  })
+}
+
+function GetAllDataRealtime(){
+  const q = query(collection(db, "covid"))
+  const list = onSnapshot(q, (querySnapshot) => {
+     var datasetss = [];
+     let count = 0;
+
+    querySnapshot.forEach(doc => {
+      if (count >= 4) {
+        return; // exit loop after 3 iterations
+      }
+      const data = doc.data();
+      datasetss.push({...data, id: doc.id}); 
+      console.log(doc.id)
+      count++;
+    })
+    datasetss.sort((a, b) => (a.country > b.country) ? 1 : -1);
+    populateTableList(datasetss)
+  })
+}
+
+
+window.onload = GetAllDataRealtime;
+
+
+    </script>
+  
+  
+

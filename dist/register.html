@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/logreg.css">
+
+  <script defer src="./bundle.js"></script>
+  <title>ITD108</title>
+</head>
+<body>
+  
+  <div class="container">
+
+    <div class="form-container">
+      <div class="logreg">
+
+        <form action="" class="form">
+
+          <h2 class="title">Let's get started!</h2>
+
+          <div class="socialcon">
+            <button id="fb" class="social"><i class="fa-brands fa-facebook-f"></i></button>
+            <button id="git" class="social"><i class="fa-brands fa-github"></i></button>
+            <button id="gog" class="social"><i class="fa-brands fa-google"></i></button>
+            <button id="ms" class="social"><i class="fa-brands fa-windows"></i></button>
+          </div>
+
+          <p>or make your own account to sign up</p>
+
+          <div class="input">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" name="username" id="username" placeholder="username">
+          </div>
+          <div class="input">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" name="email" id="email" placeholder="email">
+          </div>
+          <div class="input">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" name="password" id="password" placeholder="password">
+          </div>
+
+          <button id="signup" type="submit" class="btn solid">Sign Up</button>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="panelcon">
+
+      <div class="panel panell">
+        <div class="content">
+          <h3>Already a member?</h3>
+          <p>Just click the sign in button to redirect you to the sign in page. Feel free to explore the data sets of COVID-19 cases from the World Health Organization (WHO)</p>
+
+          <a href="login.html">
+            <button class="btn transparent" id="logbtn">Sign In</button>
+          </a>
+          
+        </div>
+        
+        <img src="img/main/register.svg" class="image">
+      </div>
+  </div>
+</body>
+</html>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-analytics.js";
+import { getAuth, createUserWithEmailAndPassword, OAuthProvider, GoogleAuthProvider, FacebookAuthProvider, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-auth.js";
+import { getFirestore, connectFirestoreEmulator, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHy3Gihw8S_mt9_DfJtig77IDzqs5mamA",
+  authDomain: "casestudy1-dc7ed.firebaseapp.com",
+  projectId: "casestudy1-dc7ed",
+  storageBucket: "casestudy1-dc7ed.appspot.com",
+  messagingSenderId: "795551283591",
+  appId: "1:795551283591:web:c8721a89279c5629137b22",
+  measurementId: "G-9QM42NYXW1"
+};
+        
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getFirestore();
+  const providerGoogle = new GoogleAuthProvider(app);
+  const providerFB = new FacebookAuthProvider(app);
+  const providerGithub = new GithubAuthProvider(app);
+  const providerMS = new OAuthProvider('microsoft.com');
+  
+  
+  //AUTHENTICATION
+  
+  document.getElementById("signup").addEventListener("click", async function() {
+    var email =  document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+  
+  
+    createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);
+      alert("Registration successful!!");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorMessage);
+      alert(error);
+    });		  		  
+  });
+
+
+  //********************************************************GOOGLE
+  const gog = document.querySelector("#gog")
+  gog.addEventListener("click", async () =>{
+  signInWithPopup(auth, providerGoogle).then((result) => {
+  
+      try {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          const user = result.user;
+          window.location.href = "home.html";
+  
+              
+      } catch (error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.customData.email;
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          console.log(errorMessage)
+          }
+     
+      })
+  })
+  
+  
+  //**********************************************************Facebook
+  const fb = document.querySelector("#fb")
+  fb.addEventListener("click", async () =>{
+  signInWithPopup(auth, providerFB).then((result) => {
+      
+  
+    try {
+      
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+      window.location.href = "home.html";
+  
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = FacebookAuthProvider.credentialFromError(error);
+      console.error(errorMessage);
+    }
+  
+    })
+  })
+  
+  
+  //*************************************************Github
+  const git = document.querySelector("#git")
+  git.addEventListener("click", async () =>{
+  signInWithPopup(auth, providerGithub).then((result) => {
+  
+      try {
+          const credential = GithubAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          const user = result.user;
+          window.location.href = "home.html";
+  
+              
+      } catch (error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.customData.email;
+          const credential = GithubAuthProvider.credentialFromError(error);
+          console.log(errorMessage)
+          }
+     
+      })
+  })
+  
+  //*************************************************Microsoft
+  const ms = document.querySelector("#ms")
+  ms.addEventListener("click", async () =>{
+  signInWithPopup(auth, providerMS).then((result) => {
+  
+      try {
+          const credential = OAuthProvider.credentialFromResult(result);
+          const accessToken = credential.accessToken;
+          const idToken = credential.idToken;
+          window.location.href = "home.html";
+  
+              
+      } catch (error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.customData.email;
+          const credential = OAuthProvider.credentialFromError(error);
+          console.log(errorMessage)
+          }
+     
+      })
+  })
+
+
+  
+  </script>
